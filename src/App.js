@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from "react";
-import RandExp from "randexp";
 import {
   Row,
   Col,
@@ -16,29 +15,54 @@ function App() {
   const [password, setPassword] = useState({
     value: null,
   });
-  const [number, setNumber] = useState({
+  const [pLength, setPLength] = useState({
     value: 6,
   });
 
-  const onFinish = (values) => {
-    if (
-      !values.uppercase &&
-      !values.symbols &&
-      !values.lowercase &&
-      !values.number
-    ) {
-      setPassword({ error: true, value: "Tick at least one of the checkbox" });
-    } else if (!values.length) {
-      setPassword({ error: true, value: "Length of password invalid" });
-    } else {
-      const temp = `[${values.uppercase ? "A-Z" : ""}${
-        values.lowercase ? "a-z" : ""
-      }${values.number ? "0-9" : ""}${values.symbols ? "!@#$%^&*" : ""}]{${
-        values.length
-      }}`;
+  const randomInt = (max) => {
+    return Math.floor(Math.random() * Math.floor(max));
+  };
 
-      const regex = new RegExp(temp);
-      setPassword({ value: new RandExp(regex).gen() });
+  const randomUpperCase = () => {
+    return String.fromCharCode(randomInt(26) + 65);
+  };
+
+  const randomLowerCase = () => {
+    return String.fromCharCode(randomInt(26) + 97);
+  };
+
+  const randomNumber = () => {
+    return +String.fromCharCode(randomInt(10) + 48);
+  };
+
+  const randomSymbol = () => {
+    const symbols = "!#$%&()*+,.";
+    return Array.from(symbols)[randomInt(symbols.length)];
+  };
+
+  const funcs = {
+    uppercase: randomUpperCase,
+    lowercase: randomLowerCase,
+    number: randomNumber,
+    symbols: randomSymbol,
+  };
+
+  const onFinish = (values) => {
+    const { uppercase, lowercase, number, symbols, length } = values;
+    const types = [
+      { uppercase },
+      { lowercase },
+      { number },
+      { symbols },
+    ].filter((item) => Object.values(item)[0]);
+    if (!types.length || !length) {
+      setPassword({ error: true, value: "Invalid Input" });
+    } else {
+      let value = "";
+      for (let i = 0; i < length; i += 1) {
+        value += funcs[Object.keys(types[randomInt(types.length)])[0]]();
+      }
+      setPassword({ value });
     }
   };
 
@@ -48,7 +72,7 @@ function App() {
     } else if (value > 32) {
       value = 32;
     }
-    setNumber({ value });
+    setPLength({ value });
   };
 
   const tips = "The prime between 6 and 32!";
@@ -83,13 +107,13 @@ function App() {
           <Form.Item
             name="length"
             label="Password length"
-            validateStatus={number.validateStatus}
-            help={number.errorMsg || tips}
+            validateStatus={pLength.validateStatus}
+            help={pLength.errorMsg || tips}
           >
             <InputNumber
               min={6}
               max={32}
-              value={number.value}
+              value={pLength.value}
               onChange={onNumberChange}
             />
           </Form.Item>
