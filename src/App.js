@@ -10,6 +10,7 @@ import {
   Typography,
   Divider,
 } from "antd";
+import { GithubOutlined } from "@ant-design/icons";
 
 function App() {
   const [password, setPassword] = useState({
@@ -80,7 +81,22 @@ function App() {
   return (
     <Row justify="center">
       <Col xs={22} sm={18} md={14} lg={10} xl={6}>
-        <Typography.Title level={2}>Password Generator</Typography.Title>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems:"center" }}>
+          <Typography.Title
+            style={{ display: "inline-block", margin: 0 }}
+            level={2}
+          >
+            Kegen
+          </Typography.Title>
+          <Button
+            type="link"
+            size="large"
+            href="https://github.com/mphung97/password-generator"
+            icon={<GithubOutlined />}
+          >
+            source
+          </Button>
+        </div>
         <Divider />
         <Form
           onFinish={onFinish}
@@ -118,11 +134,12 @@ function App() {
             />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" block htmlType="submit">
               Submit
             </Button>
           </Form.Item>
         </Form>
+        <Divider />
         <Typography.Title
           copyable={password.value}
           level={4}
